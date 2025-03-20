@@ -19,9 +19,19 @@ export class CountryService {
     .pipe(
       map(resp => CountryMapper.mapRestCountryArrayToCountryArray(resp) ),
       catchError(error => {
-        console.log(error);
-        return throwError(() =>  new Error ('Error al buscar países'));
+        return throwError(() =>  new Error ('Error al buscar capitales'));
       })
     );
+  }
+
+  searchByCountry(query:string): Observable<Country[]> {
+    query = query.toLowerCase();
+    return this.http.get<RESTCountry[]>(`${API_URL}/name/${query}`)
+    .pipe(
+      map(resp => CountryMapper.mapRestCountryArrayToCountryArray(resp) ),
+      catchError(error => {
+        return throwError(() =>  new Error ('Error al buscar países'));
+      }
+    ))
   }
 }
