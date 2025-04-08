@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, output, Output } from '@angular/core';
+import { Component, effect, EventEmitter, input, linkedSignal, output, Output, signal } from '@angular/core';
 
 @Component({
   selector: 'country-search-input',
@@ -15,4 +15,16 @@ export class CountrySearchInputComponent {
   // }
 
   placeholder = input('Buscar');
+  initialValue = input<string>();
+  inputValue = linkedSignal<string>(() => this.initialValue() ?? '');
+  debounceTime = input(1000);
+
+  debounceEffect = effect((onCleanup) => {
+    const value = this.inputValue();
+    const timeout = setTimeout(() => {
+      this.value.emit(value);
+    },this.debounceTime());
+
+    onCleanup(() => clearTimeout(timeout))
+  })
 }
